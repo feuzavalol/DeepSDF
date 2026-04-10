@@ -3,7 +3,7 @@ import os
 import model.model_sdf as sdf_model
 from utils import utils_deepsdf
 import trimesh
-from results import runs_sdf
+from results import runs_sdf 
 import results
 import numpy as np
 import config_files
@@ -16,7 +16,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def read_params(cfg):
     """Read the settings from the settings.yaml file. These are the settings used during training."""
-    training_settings_path = os.path.join(os.path.dirname(runs_sdf.__file__),  cfg['folder_sdf'], 'settings.yaml') 
+    training_settings_path = os.path.join(runs_sdf.__path__._path[0],  cfg['folder_sdf'], 'settings.yaml')
     with open(training_settings_path, 'rb') as f:
         training_settings = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -37,7 +37,7 @@ def reconstruct_object(cfg, latent_code, obj_idx, model, coords_batches, grad_si
         return
     
     # save mesh as obj
-    mesh_dir = os.path.join(os.path.dirname(runs_sdf.__file__), cfg['folder_sdf'], 'meshes_training')
+    mesh_dir = os.path.join(runs_sdf.__path__._path[0], cfg['folder_sdf'], 'meshes_training')
     if not os.path.exists(mesh_dir):
         os.mkdir(mesh_dir)
     obj_path = os.path.join(mesh_dir, f"mesh_{obj_idx}.obj")
@@ -48,8 +48,8 @@ def main(cfg):
     training_settings = read_params(cfg)
 
     # Load the model
-    weights = os.path.join(os.path.dirname(runs_sdf.__file__), cfg['folder_sdf'], 'weights.pt')
-
+    weights = os.path.join(runs_sdf.__path__._path[0], cfg['folder_sdf'], 'weights.pt')
+    
     model = sdf_model.SDFModel(
         num_layers=training_settings['num_layers'], 
         skip_connections=training_settings['latent_size'], 
@@ -66,7 +66,7 @@ def main(cfg):
     
     # Load paths
     str2int_path = os.path.join(os.path.dirname(results.__file__), 'idx_str2int_dict.npy')
-    results_dict_path = os.path.join(os.path.dirname(runs_sdf.__file__), cfg['folder_sdf'], 'results.npy')
+    results_dict_path = os.path.join(runs_sdf.__path__._path[0],cfg['folder_sdf'], 'results.npy')
     
     # Load dictionaries
     str2int_dict = np.load(str2int_path, allow_pickle=True).item()
@@ -87,5 +87,4 @@ if __name__ == '__main__':
     cfg_path = os.path.join(os.path.dirname(config_files.__file__), 'reconstruct_from_latent.yaml')
     with open(cfg_path, 'rb') as f:
         cfg = yaml.load(f, Loader=yaml.FullLoader)
-
     main(cfg)

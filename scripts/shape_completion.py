@@ -20,7 +20,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def read_params(cfg):
     """Read the settings from the settings.yaml file. These are the settings used during training."""
-    training_settings_path = os.path.join(os.path.dirname(runs_sdf.__file__),  cfg['folder_sdf'], 'settings.yaml') 
+    training_settings_path = os.path.join(runs_sdf.__path__._path[0],  cfg['folder_sdf'], 'settings.yaml') 
     with open(training_settings_path, 'rb') as f:
         training_settings = yaml.load(f, Loader=yaml.FullLoader)
 
@@ -41,7 +41,7 @@ def reconstruct_object(cfg, latent_code, obj_idx, model, coords_batches, grad_si
         return
     
     # save mesh as obj
-    mesh_dir = os.path.join(os.path.dirname(runs_sdf.__file__), cfg['folder_sdf'], 'meshes_training')
+    mesh_dir = os.path.join(runs_sdf.__path__._path[0], cfg['folder_sdf'], 'meshes_training')
     if not os.path.exists(mesh_dir):
         os.mkdir(mesh_dir)
     obj_path = os.path.join(mesh_dir, f"mesh_{obj_idx}.obj")
@@ -83,7 +83,7 @@ def main(cfg):
     model_settings = read_params(cfg)
 
     # Set directory and paths
-    model_dir = os.path.join(os.path.dirname(runs_sdf.__file__), cfg['folder_sdf'])
+    model_dir = os.path.join(runs_sdf.__path__._path[0], cfg['folder_sdf'])
 
     inference_dir = os.path.join(model_dir, f"infer_latent_{datetime.now().strftime('%d_%m_%H%M%S')}")
     if not os.path.exists(inference_dir):

@@ -27,7 +27,7 @@ class Trainer():
     def __call__(self):
         # directories
         self.timestamp_run = datetime.now().strftime('%d_%m_%H%M%S')   # timestamp to use for logging data
-        self.runs_dir = os.path.dirname(runs.__file__)               # directory fo all runs
+        self.runs_dir = os.path.dirname(runs.__path__._path[0])               # directory fo all runs
         self.run_dir = os.path.join(self.runs_dir, self.timestamp_run)  # directory for this run
         if not os.path.exists(self.run_dir):
             os.makedirs(self.run_dir)
@@ -38,7 +38,7 @@ class Trainer():
         with open(self.log_path, 'w') as f:
             yaml.dump(self.train_cfg, f)
 
-        # calculate num objects in samples_dictionary, wich is the number of keys
+        # calculate num objects in samples_dictionary, which is the number of keys
         samples_dict_path = os.path.join(os.path.dirname(results.__file__), f'samples_dict_{train_cfg["dataset"]}.npy')
         samples_dict = np.load(samples_dict_path, allow_pickle=True).item()
 
