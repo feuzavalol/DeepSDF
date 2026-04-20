@@ -39,7 +39,8 @@ class Trainer():
             yaml.dump(self.train_cfg, f)
 
         # calculate num objects in samples_dictionary, which is the number of keys
-        samples_dict_path = os.path.join(os.path.dirname(results.__file__), f'samples_dict_{train_cfg["dataset"]}.npy')
+        samples_dict_path = os.path.join(os.path.dirname(runs.__path__._path[0]), f'samples_dict_{train_cfg["dataset"]}.npy')
+        print(samples_dict_path)
         samples_dict = np.load(samples_dict_path, allow_pickle=True).item()
 
         # instantiate model and optimisers
